@@ -1,0 +1,7 @@
+SNYK_API_TOKEN = "your-snyk-api-token-here"
+ORG_ID = "your-org-id-here"
+JIRA_URL = "https://your-domain.atlassian.net"
+JIRA_API_TOKEN = "your-jira-api-token-here"
+JIRA_USER_EMAIL = "your-email@example.com"
+PROJECT_KEY = "VULN"
+ISSUE_TYPE = "Task"
