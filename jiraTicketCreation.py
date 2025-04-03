@@ -58,11 +58,15 @@ def create_jira_ticket(project_name: str, project_id: str, risk_factors: Dict, c
     priority = calculate_priority(risk_factors)
     due_date = calculate_due_date(priority)
     summary = f"Vulnerability {cve_id} in {project_name}"
-    description = (
+        description = (
         f"Application '{project_name}' (Project ID: {project_id}) is impacted by {cve_id}.\n\n"
         f"**Risk Factors:** {json.dumps(risk_factors, indent=2)}\n\n"
         f"**Due Date:** {due_date} (based on {SLA_DAYS[priority]}-day SLA for {priority} priority)\n\n"
-        "Please investigate and remediate this vulnerability."
+        "Please investigate and remediate this vulnerability.\n\n"
+        f"**Resources for Remediation:**\n"
+        f"- [NVD - {cve_id}](https://nvd.nist.gov/vuln/detail/{cve_id})\n"
+        f"- [MITRE CVE - {cve_id}](https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id})\n"
+        "- Check vendor documentation or security advisories for specific patches."
     )
     payload = {
         "fields": {

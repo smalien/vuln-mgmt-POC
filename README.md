@@ -180,14 +180,18 @@ Use AWS services to ingest CVE data, process it, and notify owners via email.
      def lambda_handler(event, context):
          cve_id = event["cve_id"]
          message = f"""Subject: Action Required: Vulnerabilities in Your Systems ({cve_id})
-         Hi Team,
-         See JIRA tickets for {cve_id}:
-         - Highest: {JIRA_URL}/issues/?filter=12345
-         - High: {JIRA_URL}/issues/?filter=12346
-         - Medium: {JIRA_URL}/issues/?filter=12347
-         - Low: {JIRA_URL}/issues/?filter=12348
-         Assign yourself if not pre-assigned.
-         """
+          Hi Team,
+          See JIRA tickets for {cve_id}:
+          - Highest: {JIRA_URL}/issues/?filter=12345
+          - High: {JIRA_URL}/issues/?filter=12346
+          - Medium: {JIRA_URL}/issues/?filter=12347
+          - Low: {JIRA_URL}/issues/?filter=12348
+          Assign yourself if not pre-assigned.
+          **Resources for Remediation:**
+          - [NVD - {cve_id}](https://nvd.nist.gov/vuln/detail/{cve_id})
+          - [MITRE CVE - {cve_id}](https://cve.mitre.org/cgi-bin/cvename.cgi?name={cve_id})
+          - Check vendor documentation or security advisories for specific patches.
+          """
          sns.publish(TopicArn="arn:aws:sns:region:account-id:VulnNotifications", Message=message)
          return {"status": "Email sent"}
      ```
@@ -213,32 +217,39 @@ Subject: Action Required: Vulnerabilities in our systems (CVE ID)
 
 Hi Team,
 
-We’ve identified vulnerabilities in our systems for [CVE ID].
-This is particularly a risk for public-facing systems as the scope of potential threat actors is much more broad.
+We’ve identified a critical vulnerability in our systems (CVE-2025-1234).
+This is particularly a risk for public-facing systems as the scope of potential threat actors is much more broad and so we’ve categorized systems by this and other risk factors.
 
-Please review and act on the JIRA tickets linked to below, prioritizing your impacted systems by risk level as categorized below:
+Please review and act on the JIRA tickets linked to below prioritizing your impacted systems by risk level as categorized below:
 
 Highest Priority (2-day SLA)
-[JIRA_URL]/issues/?filter=12345  
+https://org.atlassian.net/issues/?filter=12345 
+
 High Priority (5-day SLA)
-[JIRA_URL]/issues/?filter=12346  
+https://org.atlassian.net/issues/?filter=12346 
+
 Medium Priority (14-day SLA)
-[JIRA_URL]/issues/?filter=12347  
+https://org.atlassian.net/issues/?filter=12347  
+
 Low Priority (30-day SLA)
-[JIRA_URL]/issues/?filter=12348 
+https://org.atlassian.net/issues/?filter=12348 
 
 Next Steps:  
-Assign tickets to yourself or the appropriate member of your team in JIRA if not pre-assigned.  
+1. Assign tickets to yourself or the appropriate member of your team in JIRA if not pre-assigned.
+2. Update tickets with details (e.g., public-facing status) within 48 hours if not pre-identified.
+3. Apply appropriate fixes (update to secure version, disable vulnerable function, etc.) within the provided SLAs.
+4. Contact the Security team [email] with questions including if you have reason to believe this does not apply to your system.
 
-Update tickets with details (e.g., public-facing status) within 48 hours in not pre-identified. 
-
-Contact the Security team [email] with questions.
+Resources for Remediation:  
+- NVD - CVE-2025-1234 (https://nvd.nist.gov/vuln/detail/CVE-2025-1234)
+- MITRE CVE - CVE-2025-1234 (https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2025-1234)
+- Check vendor documentation or security advisories for specific patches.
 
 Thank you for your cooperation,
-[Your name/Team name]
+The Application Security Team
 ```
 
-## Assignment
+## Ticket Assignment
 
 - **Pre-Assignment**: Use `owners.json` to set assignees in `jira_tickets.py`.
 - **Self-Assignment**: If unknown, leave unassigned and request owners to assign via the email.
